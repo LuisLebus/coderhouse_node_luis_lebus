@@ -1,29 +1,17 @@
-const { productManager } = require("./ProductManager");
 const express = require("express");
+
+const { productsRouter } = require("./routes/productsRouter");
+const { cartsRouter } = require("./routes/cartsRouter");
 
 const app = express();
 
-app.get("/products/:pid", (req, res) => {
-  let pid = Number(req.params.pid);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-  if (!pid) {
-    res.send({ error: "Invalid parameter." });
-  } else {
-    res.send(productManager.getProductById(Number(req.params.pid)));
-  }
-});
+app.use("/api/products/", productsRouter);
+app.use("/api/carts/", cartsRouter);
 
-app.get("/products/", (req, res) => {
-  let limit = Number(req.query.limit);
-  let products = productManager.getProducts();
-
-  if (!limit) {
-    res.send(products);
-  } else {
-    res.send(products.slice(0, limit));
-  }
-});
-
+const PORT = 8080;
 app.listen(8080, () => {
-  console.log("Listening port 8080...");
+  console.log(`Server ready in http://localhost:${PORT}`);
 });

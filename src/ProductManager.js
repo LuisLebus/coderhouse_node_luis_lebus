@@ -101,13 +101,13 @@ class ProductManager {
     //Check if argument are valid.
     if (id === undefined || !product) {
       console.log("Error:", "Invalid argument.");
-      return;
+      return false;
     }
 
     // Check if the product id exists.
     if (!this.productIdExist(id)) {
       console.log("Error:", `Product not found. Id: ${id}.`);
-      return;
+      return false;
     }
 
     const temp_id = id;
@@ -123,19 +123,21 @@ class ProductManager {
     console.log("Success:", `Product updated. Id: ${id}.`);
 
     fs.writeFileSync(this.#path, JSON.stringify(this.#products));
+
+    return true;
   }
 
   deleteProduct(id) {
     //Check if argument are valid.
     if (id === undefined) {
       console.log("Error:", "Invalid argument.");
-      return;
+      return false;
     }
 
     // Check if the product id exists.
     if (!this.productIdExist(id)) {
       console.log("Error:", `Product not found. Id: ${id}.`);
-      return;
+      return false;
     }
 
     //Remove object from array.
@@ -146,9 +148,13 @@ class ProductManager {
     console.log("Success:", `Product deleted. Id: ${id}.`);
 
     fs.writeFileSync(this.#path, JSON.stringify(this.#products));
+
+    return true;
   }
 }
 
-const productManager = new ProductManager("./data.txt");
+const productManager = new ProductManager(
+  __dirname + "/../databases/products.json"
+);
 
 module.exports = { productManager };
