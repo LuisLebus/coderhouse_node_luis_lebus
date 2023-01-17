@@ -4,23 +4,34 @@ const productsRouter = express.Router();
 const { productManager } = require(__dirname + "/../ProductManager.js");
 
 productsRouter.get("/", (req, res) => {
-  let limit = Number(req.query.limit);
   let products = productManager.getProducts();
 
-  if (!limit) {
-    res.send(products);
+  if (req.query.limit !== undefined) {
+    let limit = Number(req.query.limit);
+
+    if (isNaN(limit)) {
+      res.send({ error: "Invalid parameter." });
+    } else {
+      res.send(products.slice(0, limit));
+    }
   } else {
-    res.send(products.slice(0, limit));
+    res.send(products);
   }
 });
 
 productsRouter.get("/:pid", (req, res) => {
   let pid = Number(req.params.pid);
 
-  if (!pid) {
+  if (isNaN(pid)) {
     res.send({ error: "Invalid parameter." });
   } else {
-    res.send(productManager.getProductById(Number(pid)));
+    let product = productManager.getProductById(pid);
+
+    if (!product) {
+      res.send({ error: "Something failed." });
+    } else {
+      res.send(product);
+    }
   }
 });
 
@@ -28,7 +39,7 @@ productsRouter.put("/:pid", (req, res) => {
   let pid = Number(req.params.pid);
   let product = req.body;
 
-  if (!pid) {
+  if (isNaN(pid)) {
     res.send({ error: "Invalid parameter." });
   } else {
     let err = productManager.updateProduct(pid, product);
@@ -44,7 +55,7 @@ productsRouter.put("/:pid", (req, res) => {
 productsRouter.delete("/:pid", (req, res) => {
   let pid = Number(req.params.pid);
 
-  if (!pid) {
+  if (isNaN(pid)) {
     res.send({ error: "Invalid parameter." });
   } else {
     let err = productManager.deleteProduct(pid);
@@ -54,6 +65,17 @@ productsRouter.delete("/:pid", (req, res) => {
     } else {
       res.send("Ok");
     }
+  }
+});
+
+productsRouter.post("/", (req, res) => {
+  let product = req.body;
+  let err = productManager.addProduct(product);
+
+  if (!err) {
+    res.send({ error: "Something failed." });
+  } else {
+    res.send("Ok");
   }
 });
 

@@ -1,9 +1,9 @@
 const fs = require("fs");
+const { productsRouter } = require("./routes/productsRouter");
 
 class ProductManager {
   #products;
   #path;
-  #pathId;
   static #pruductId;
 
   constructor(path) {
@@ -11,27 +11,23 @@ class ProductManager {
     ProductManager.#pruductId = 0;
     this.#path = path;
 
-    let dotPosition = this.#path.lastIndexOf(".");
-
-    //This file is used to save the product id.
-    this.#pathId =
-      this.#path.substring(0, dotPosition) +
-      "Id" +
-      this.#path.substring(dotPosition, this.#path.length);
-
     if (fs.existsSync(this.#path)) {
       this.#products = JSON.parse(fs.readFileSync(this.#path, "utf-8"));
     }
 
-    if (fs.existsSync(this.#pathId)) {
-      ProductManager.#pruductId = JSON.parse(
-        fs.readFileSync(this.#pathId, "utf-8")
-      );
+    //Find max id in product array
+    if (this.#products.length > 0) {
+      ProductManager.#pruductId =
+        Math.max(
+          ...this.#products.map((element) => {
+            return element.id;
+          })
+        ) + 1;
     }
   }
 
   productCodeExist(code) {
-    let productExist = this.#products.some((element) => {
+    const productExist = this.#products.some((element) => {
       return element.code === code;
     });
 
@@ -39,7 +35,7 @@ class ProductManager {
   }
 
   productIdExist(id) {
-    let productExist = this.#products.some((element) => {
+    const productExist = this.#products.some((element) => {
       return element.id === id;
     });
 
@@ -50,7 +46,7 @@ class ProductManager {
     //Check if argument are valid.
     if (!product) {
       console.log("Error:", "Invalid argument.");
-      return;
+      return false;
     }
 
     // Check if the product code exists.
@@ -59,20 +55,20 @@ class ProductManager {
         "Error:",
         `The product already exists. Code: ${product.code}.`
       );
-      return;
+      return false;
     }
 
     //Add id to object.
     product["id"] = ProductManager.#pruductId;
+    ProductManager.#pruductId++;
 
     //Add object to array.
     this.#products.push(product);
     fs.writeFileSync(this.#path, JSON.stringify(this.#products));
 
-    ProductManager.#pruductId++;
-    fs.writeFileSync(this.#pathId, JSON.stringify(ProductManager.#pruductId));
+    console.log("Success:", `Product added. Id: ${product.id}.`);
 
-    console.log("Success:", `Product added. Code: ${product.code}.`);
+    return true;
   }
 
   getProducts() {
@@ -83,13 +79,13 @@ class ProductManager {
     //Check if argument are valid.
     if (id === undefined) {
       console.log("Error:", "Invalid argument.");
-      return;
+      return false;
     }
 
     // Check if the product id exists.
     if (!this.productIdExist(id)) {
       console.log("Error:", `Product not found. Id: ${id}.`);
-      return `Product not found. Id: ${id}.`;
+      return false;
     }
 
     return this.#products.find((element) => {
@@ -110,15 +106,21 @@ class ProductManager {
       return false;
     }
 
-    const temp_id = id;
+    //Find index of product in array
+    const pIndex = this.#products.findIndex((element) => {
+      return element.id === id;
+    });
 
-    this.deleteProduct(id);
+    this.#products[pIndex].title = product.title;
+    this.#products[pIndex].description = product.description;
+    this.#products[pIndex].price = product.price;
+    this.#products[pIndex].status = product.status;
+    this.#products[pIndex].category = product.category;
+    this.#products[pIndex].thumbnails = product.thumbnails;
+    this.#products[pIndex].code = product.code;
+    this.#products[pIndex].stock = product.stock;
 
-    //Add id to object.
-    product["id"] = temp_id;
-
-    //Add object to array.
-    this.#products.push(product);
+    console.log(this.#products);
 
     console.log("Success:", `Product updated. Id: ${id}.`);
 
