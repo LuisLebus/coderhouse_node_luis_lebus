@@ -1,0 +1,34 @@
+<div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: center; margin: 1rem">
+    <h3>Agregar producto</h3>
+    <div>
+        <label for="title">Título</label> 
+        <input type="text" name="title" id="inputTitle">    
+    </div>
+    <div>
+        <label for="desc">Descripción</label> 
+        <input type="text" name="desc" id="inputDescription">
+    </div>
+    <div>
+        <label for="code">Código</label> 
+        <input type="text" name="code" id="inputCode">    
+    </div>
+    <button id="btnAddProduct">Agregar</button>
+</div>
+    
+<hr>
+
+<div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: center; margin: 1rem">
+    <h3>Eliminar producto</h3>
+    <div>
+        <label for="delProd">Id</label> 
+        <input type="text" name="delProd" id="inputDelProd">
+    </div>
+    <button id="btnDelProduct">Eliminar</button>
+</div>
+
+<hr>
+
+<div id="mainDiv"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>
