@@ -1,8 +1,13 @@
 {{#each products}}
-<div>
-    <h4>{{this.title}}</h3>
-    <h5>Descripción: {{this.description}}</h5>
-    <h5>Código: {{this.code}}</h5>
-    <h5>Id: {{this.id}}</h5>
+
+<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 1rem">
+    <div>
+        <h4>{{this.title}}</h4>
+    </div>
+    <div>
+        <h5>Descripción: {{this.description}}</h5>
+        <h5>Categoría: {{this.category}}</h5>
+        <h5>Precio: {{this.price}}</h5>
+    </div>
 </div>
 {{/each}}

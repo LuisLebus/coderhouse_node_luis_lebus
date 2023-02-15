@@ -1,0 +1,21 @@
+<h6>cart id: 63e98bc6089f4749624cb4ed</h6>
+
+{{#each products}}
+<div style="display: flex; flex-direction: row; justify-content: center; align-items: center">
+    <h4>{{this.title}}</h4>
+</div>
+<div style="display: flex; flex-direction: row; justify-content: space-evenly; align-items: center; margin: 1rem">
+    <div>
+        <h5>Descripción: {{this.description}}</h5>
+        <h5>Categoría: {{this.category}}</h5>
+        <h5>Precio: {{this.price}}</h5>
+    </div>
+    <div>
+        <button type="button" onclick="btnAddProduct(this.id)" id={{this._id}}>Agregar</button>
+    </div>
+</div>
+
+{{/each}}
+
+<script src="/js/products.js"></script>
+

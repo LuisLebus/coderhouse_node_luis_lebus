@@ -10,7 +10,7 @@ socket.on("products", (data) => {
           <h4>${element.title}</h3>
           <h5>Descripción: ${element.description}</h5>
           <h5>Código: ${element.code}</h5>
-          <h5>Id: ${element.id}</h5>
+          <h5>Id: ${element._id}</h5>
       </div>`;
   });
 });

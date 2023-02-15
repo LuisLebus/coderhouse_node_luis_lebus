@@ -1,0 +1,9 @@
+{{#each cart.products}}
+
+<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 1rem">
+    <div>
+        <h5>Producto: {{this.product}}</h5>
+        <h5>Cantidad: {{this.quantity}}</h5>
+    </div>
+</div>
+{{/each}}
