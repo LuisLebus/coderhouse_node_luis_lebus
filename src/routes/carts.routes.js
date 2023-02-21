@@ -53,3 +53,93 @@ router.get("/:cid", async (req, res) => {
     }
   }
 });
+
+router.delete("/:cid/products/:pid", async (req, res) => {
+  const cid = req.params.cid;
+  const pid = req.params.pid;
+
+  if (!cid || !pid) {
+    res.status(400).send({ message: "Invalid parameters" });
+  } else {
+    try {
+      const result = await cartManager.delete(cid, pid);
+
+      if (!result) {
+        res.status(500).send({ message: "Something failed" });
+      } else {
+        res.status(200).send({ message: "Ok" });
+      }
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  }
+});
+
+router.delete("/:cid", async (req, res) => {
+  const cid = req.params.cid;
+
+  if (!cid) {
+    res.status(400).send({ message: "Invalid parameters" });
+  } else {
+    try {
+      const result = await cartManager.deleteAll(cid);
+
+      if (!result) {
+        res.status(500).send({ message: "Something failed" });
+      } else {
+        res.status(200).send({ message: "Ok" });
+      }
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  }
+});
+
+router.put("/:cid", async (req, res) => {
+  const cid = req.params.cid;
+  const products = req.body;
+
+  if (!cid) {
+    res.status(400).send({ message: "Invalid parameters" });
+  } else {
+    try {
+      const result = await cartManager.updateAll(cid, products);
+
+      if (!result) {
+        res.status(500).send({ message: "Something failed" });
+      } else {
+        res.status(200).send({ message: "Ok" });
+      }
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  }
+});
+
+router.put("/:cid/products/:pid", async (req, res) => {
+  const cid = req.params.cid;
+  const pid = req.params.pid;
+  const { quantity } = req.body;
+
+  console.log(cid);
+
+  console.log(pid);
+
+  console.log(quantity);
+
+  if (!cid || !pid || !quantity) {
+    res.status(400).send({ message: "Invalid parameters" });
+  } else {
+    try {
+      const result = await cartManager.updateQuantity(cid, pid, quantity);
+
+      if (!result) {
+        res.status(500).send({ message: "Something failed" });
+      } else {
+        res.status(200).send({ message: "Ok" });
+      }
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  }
+});

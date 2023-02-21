@@ -21,6 +21,10 @@ export async function loader() {
       thumbnails: [],
     };
 
-    await productManager.create(product);
+    try {
+      await productManager.create(product);
+    } catch (err) {
+      throw err;
+    }
   }
 }

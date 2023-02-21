@@ -41,10 +41,15 @@ startSocket(httpServer);
 
 //Connect to Atlas
 const enviroment = async () => {
-  await mongoose.connect(
-    `mongodb+srv://${DB_USER}:${DB_PASS}@cluster0.9lsdftr.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`
-  );
+  try {
+    await mongoose.connect(
+      `mongodb+srv://${DB_USER}:${DB_PASS}@cluster0.9lsdftr.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`
+    );
+  } catch (err) {
+    throw err;
+  }
 
+  //WARNING: Do not uncomment this line unless you want to populate the product DB.
   //loader();
 };
 

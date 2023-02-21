@@ -7,8 +7,10 @@ export const router = Router();
 
 router.get("/", async (req, res) => {
   try {
+    const products = await productManager.readAll(10, 1, null, null, 1);
+
     res.render("home", {
-      products: await productManager.readAll(),
+      products: products.docs,
     });
   } catch (err) {
     throw err;
@@ -16,9 +18,23 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/products", async (req, res) => {
+  const limitVal = req.query.limit || "10";
+  const pageVal = req.query.page || "1";
+  const filterVal = req.query.filter;
+  const filterField = req.query.filterField;
+  const sortVal = req.query.sort || "1";
+
   try {
+    const products = await productManager.readAll(
+      limitVal,
+      pageVal,
+      filterField,
+      filterVal,
+      sortVal
+    );
+
     res.render("products", {
-      products: await productManager.readAll(),
+      products: products.docs,
     });
   } catch (err) {
     res.status(500).send(err.message);
@@ -28,14 +44,11 @@ router.get("/products", async (req, res) => {
 router.get("/carts/:cid", async (req, res) => {
   const cid = req.params.cid;
 
-  console.log(cid);
-
   if (!cid) {
     res.status(400).send({ message: "Invalid parameters" });
   } else {
     try {
       const car = await cartManager.read(cid);
-      console.log(car);
 
       res.render("cart", {
         cart: await cartManager.read(cid),

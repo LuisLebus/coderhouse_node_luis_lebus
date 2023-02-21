@@ -1,4 +1,28 @@
-<h6>cart id: 63e98bc6089f4749624cb4ed</h6>
+<div style="display: flex; flex-direction: row; justify-content: center; align-items: center">
+    <h6>cart id: 63f3ebcfc1b16b712dd39af9</h6>
+</div>
+
+
+<div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 2rem">
+    <button type="button" id="btnPrev">Anterior</button>
+    <h5 id="lblPage">4</h5>
+    <button type="button" id="btnNext">Siguiente</button>
+</div>
+
+
+<div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 2rem">
+    <label for="limitedSelect"> Mostrar </label>
+
+    <select name="limitedSelect" id="limitedSelect" onchange="limitSelectChanged()">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+    </select>   
+</div>
+
+
 
 {{#each products}}
 <div style="display: flex; flex-direction: row; justify-content: center; align-items: center">
@@ -8,6 +32,7 @@
     <div>
         <h5>Descripción: {{this.description}}</h5>
         <h5>Categoría: {{this.category}}</h5>
+        <h5>Estado: {{this.status}}</h5> 
         <h5>Precio: {{this.price}}</h5>
     </div>
     <div>

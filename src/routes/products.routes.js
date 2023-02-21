@@ -5,20 +5,22 @@ const productManager = new ProductManager();
 export const router = Router();
 
 router.get("/", async (req, res) => {
+  const limitVal = req.query.limit || "10";
+  const pageVal = req.query.page || "1";
+  const filterVal = req.query.filter;
+  const filterField = req.query.filterField;
+  const sortVal = req.query.sort || "1";
+
   try {
-    const products = await productManager.readAll();
+    const products = await productManager.readAll(
+      limitVal,
+      pageVal,
+      filterField,
+      filterVal,
+      sortVal
+    );
 
-    if (req.query.limit !== undefined) {
-      const limit = Number(req.query.limit);
-
-      if (isNaN(limit)) {
-        res.status(400).send({ message: "Invalid parameters" });
-      } else {
-        res.status(200).send(products.slice(0, limit));
-      }
-    } else {
-      res.status(200).send(products);
-    }
+    res.status(200).send(products);
   } catch (err) {
     res.status(500).send(err.message);
   }

@@ -1,10 +1,22 @@
 import { productModel } from "./models/product.model.js";
 import { cartModel } from "./models/cart.model.js";
+import { query } from "express";
 
 export class ProductManager {
-  async readAll() {
+  async readAll(limitVal, pageVal, filterField, filterVal, sortVal) {
+    const query = {};
+
+    if (filterVal && filterField) {
+      query[`${filterField}`] = filterVal;
+    }
+
     try {
-      const products = await productModel.find().lean();
+      const products = await productModel.paginate(query, {
+        lean: true,
+        limit: limitVal,
+        page: pageVal,
+        sort: { price: sortVal },
+      });
       return products;
     } catch (err) {
       throw err;
@@ -58,7 +70,10 @@ export class ProductManager {
 export class CartManager {
   async read(cid) {
     try {
-      const cart = await cartModel.findById(cid).lean();
+      const cart = await cartModel
+        .findById(cid)
+        .populate("products.product")
+        .lean();
       return cart;
     } catch (err) {
       throw err;
@@ -75,9 +90,51 @@ export class CartManager {
     }
   }
 
-  async delete(cid) {
+  async deleteAll(cid) {
     try {
-      await cartModel.findByIdAndDelete(cid);
+      const cart = await cartModel.findById(cid);
+
+      if (cart) {
+        cart.products = [];
+
+        await cartModel.findByIdAndUpdate(cid, cart);
+
+        return true;
+      } else {
+        throw new Error("Cart not found");
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async delete(cid, pid) {
+    try {
+      const cart = await cartModel.findById(cid);
+
+      if (cart) {
+        //Check if product exists in this cid
+        const productExist = cart.products.some((element) => {
+          return element.product.toString() === pid;
+        });
+
+        if (!productExist) {
+          throw new Error("Product not found");
+        }
+
+        //Filter to remove pid from cid
+        const filteredProducts = cart.products.filter((element) => {
+          return element.product.toString() !== pid;
+        });
+
+        cart.products = filteredProducts;
+
+        await cartModel.findByIdAndUpdate(cid, cart);
+
+        return true;
+      } else {
+        throw new Error("Cart not found");
+      }
     } catch (err) {
       throw err;
     }
@@ -90,7 +147,7 @@ export class CartManager {
       if (cart) {
         //Find index of pruduct in array
         const pIndex = cart.products.findIndex((element) => {
-          return element.product === pid;
+          return element.product.toString() === pid;
         });
 
         //If product already exists increment its quantity, otherwise create object and push it
@@ -100,6 +157,56 @@ export class CartManager {
           const item = { product: pid, quantity: 1 };
           cart.products.push(item);
         }
+
+        await cartModel.findByIdAndUpdate(cid, cart);
+
+        return true;
+      } else {
+        throw new Error("Cart not found");
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateAll(cid, products) {
+    try {
+      await this.deleteAll(cid);
+
+      for (const element of products) {
+        for (let i = 0; i < element.quantity; i++) {
+          await this.update(cid, element.product);
+        }
+      }
+
+      return true;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateQuantity(cid, pid, quantity) {
+    try {
+      const cart = await cartModel.findById(cid);
+
+      if (cart) {
+        //Check if product exists in this cid
+        const productExist = cart.products.some((element) => {
+          console.log(element);
+          return element.product.toString() === pid;
+        });
+
+        if (!productExist) {
+          throw new Error("Product not found");
+        }
+
+        //Find index of pruduct in array
+        const pIndex = cart.products.findIndex((element) => {
+          return element.product.toString() === pid;
+        });
+
+        //Update quantity
+        cart.products[pIndex].quantity = quantity;
 
         await cartModel.findByIdAndUpdate(cid, cart);
 
