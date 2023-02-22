@@ -1,5 +1,6 @@
-<div style="display: flex; flex-direction: row; justify-content: center; align-items: center">
+<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 3rem">
     <h6>cart id: 63f3ebcfc1b16b712dd39af9</h6>
+    <button type="button" id="btnCart">Ir al carrito</button>
 </div>
 
 
@@ -10,7 +11,7 @@
 </div>
 
 
-<div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 2rem">
+<div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 2rem; margin: 1rem">
     <label for="limitedSelect"> Mostrar </label>
 
     <select name="limitedSelect" id="limitedSelect" onchange="limitSelectChanged()">
@@ -22,6 +23,26 @@
     </select>   
 </div>
 
+<div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 2rem; margin: 1rem">
+    <label for="sortSelect"> Ordenar </label>
+
+    <select name="sortSelect" id="sortSelect" onchange="sortSelectChanged()">
+        <option value="1">menor precio</option>
+        <option value="-1">mayor precio</option>
+    </select>   
+</div>
+
+<div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 2rem; margin: 1rem">
+    <label for="filterValSelect"> Filtrar </label>
+
+    <select name="filterValSelect" id="filterValSelect" onchange="filterValSelectChanged()">
+        <option value="all">Categoría: Todos</option>
+        <option value="Toys">Categoría: Toys</option>
+        <option value="Books">Categoría: Books</option>
+        <option value="Home">Categoría: Home</option>
+        <option value="Kids">Categoría: Kids</option>
+    </select>   
+</div>
 
 
 {{#each products}}

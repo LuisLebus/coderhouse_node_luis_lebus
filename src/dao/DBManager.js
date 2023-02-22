@@ -6,7 +6,7 @@ export class ProductManager {
   async readAll(limitVal, pageVal, filterField, filterVal, sortVal) {
     const query = {};
 
-    if (filterVal && filterField) {
+    if (filterVal && filterVal !== "all" && filterField) {
       query[`${filterField}`] = filterVal;
     }
 
@@ -70,10 +70,7 @@ export class ProductManager {
 export class CartManager {
   async read(cid) {
     try {
-      const cart = await cartModel
-        .findById(cid)
-        .populate("products.product")
-        .lean();
+      const cart = await cartModel.findById(cid).populate("products.product").lean();
       return cart;
     } catch (err) {
       throw err;

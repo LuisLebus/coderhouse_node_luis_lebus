@@ -9,7 +9,7 @@ export const __filename = fileURLToPath(import.meta.url);
 export const __dirname = path.dirname(__filename);
 
 export async function loader() {
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 60; i++) {
     const product = {
       title: faker.commerce.productName(),
       description: faker.commerce.productMaterial(),
